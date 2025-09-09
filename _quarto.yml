@@ -1,0 +1,29 @@
+project:
+  type: website
+
+website:
+  title: "Nedret Sen-Cavus"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: about.qmd
+        text: About
+      - text: Assignments
+        menu:
+          - href: assignments/assign01.qmd
+            text: Assignment 1
+          - href: assignments/assign02.qmd
+            text: Assignment 2
+    right:
+      - href: resume/NedretSenCavus_Resume.pdf
+        text: Resume/CV
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+editor: visual
+

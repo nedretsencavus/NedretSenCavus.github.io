@@ -1,0 +1,17 @@
+{
+  "hash": "aaf876662426ec711752c8e091f15cac",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Nedret Sen-Cavus\"\n---\n\n\n\n\nThis is a Quarto website.\n\nTo learn more about Quarto websites visit <https://quarto.org/docs/websites>.\n\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nplot(iris, pch=20, cex=.8, col=\"firebrick\"\n     )\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::\n\n\n\n\n1 + 1 \\`\\`\\`\n\ninstall.packages(\"quarto\")\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
