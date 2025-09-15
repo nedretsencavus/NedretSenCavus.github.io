@@ -2,17 +2,12 @@
 title: "Nedret Sen-Cavus"
 ---
 
-This is a Quarto website.
+<!-- index.qmd -->
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+---
+title: "Home"
+---
 
-```{r}
-plot(iris, pch=20, cex=.8, col="firebrick"
-     )
+# Welcome
 
-
-```
-
-1 + 1 \`\`\`
-
-install.packages("quarto")
+This is my Quarto website for the course. Use the navigation bar to access **About**, **Assignments**, and my **Resume/CV**.
