@@ -7,9 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Nedret Sen Cavus">
-<meta name="dcterms.date" content="2025-09-12">
 
-<title>Assignment 1: Website Design Note – Nedret Sen Cavus</title>
+<title>Assignment 2: Comparison between Google Trends Website and R – Nedret Sen Cavus</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -136,11 +135,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-  <li><a href="#visual-design" id="toc-visual-design" class="nav-link" data-scroll-target="#visual-design">Visual Design</a></li>
-  <li><a href="#navigation-information-architecture" id="toc-navigation-information-architecture" class="nav-link" data-scroll-target="#navigation-information-architecture">Navigation &amp; Information Architecture</a></li>
-  <li><a href="#technical-setup" id="toc-technical-setup" class="nav-link" data-scroll-target="#technical-setup">Technical Setup</a></li>
-  <li><a href="#rationale-future-enhancements" id="toc-rationale-future-enhancements" class="nav-link" data-scroll-target="#rationale-future-enhancements">Rationale &amp; Future Enhancements</a></li>
+  <li><a href="#a.-data-collection" id="toc-a.-data-collection" class="nav-link active" data-scroll-target="#a.-data-collection">A. Data Collection</a></li>
+  <li><a href="#b.-data-characteristics" id="toc-b.-data-characteristics" class="nav-link" data-scroll-target="#b.-data-characteristics">B. Data Characteristics</a></li>
+  <li><a href="#c.-observed-interest-patterns" id="toc-c.-observed-interest-patterns" class="nav-link" data-scroll-target="#c.-observed-interest-patterns">C. Observed Interest Patterns</a></li>
+  <li><a href="#d.-comparison-of-the-two-methods" id="toc-d.-comparison-of-the-two-methods" class="nav-link" data-scroll-target="#d.-comparison-of-the-two-methods">D. Comparison of the Two Methods</a></li>
+  <li><a href="#e.-conclusion" id="toc-e.-conclusion" class="nav-link" data-scroll-target="#e.-conclusion">E. Conclusion</a></li>
   </ul>
 </nav>
     </div>
@@ -149,7 +148,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Assignment 1: Website Design Note</h1>
+<h1 class="title">Assignment 2: Comparison between Google Trends Website and R</h1>
 </div>
 
 
@@ -163,12 +162,6 @@ ul.task-list li input[type="checkbox"] {
           </div>
   </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">September 12, 2025</p>
-    </div>
-  </div>
   
     
   </div>
@@ -178,37 +171,106 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="overview" class="level1">
-<h1>Overview</h1>
-<p>This website is created using <strong>RStudio Quarto</strong> and deployed to <strong>GitHub Pages</strong>. Quarto provides a clean, reproducible workflow where site-wide options (title, navbar, theme, and table of contents) are managed in <code>_quarto.yml</code>, and content pages are authored in portable <code>.qmd</code> files.</p>
+<section id="a.-data-collection" class="level3">
+<h3 class="anchored" data-anchor-id="a.-data-collection">A. Data Collection</h3>
+<p>To examine search interest related to the 2024 U.S. presidential election, I collected Google Trends data for the search terms <em>Trump</em>, <em>Kamala Harris</em>, and <em>Election</em> using two approaches:</p>
+<ol type="1">
+<li><p><strong>Google Trends Website</strong><br>
+On the <a href="https://trends.google.com/">Google Trends website</a>, I entered the three terms, set the location to the United States, and chose the custom time interval <strong>January 15, 2024 to December 17, 2024</strong>. This range covers the election process from the early primaries through Election Day. I downloaded the dataset as a CSV file.</p></li>
+<li><p><strong>R with gtrendsR Package</strong><br>
+I installed and loaded the <code>gtrendsR</code> package in RStudio. Using the custom time range option, I ran:</p></li>
+</ol>
+<pre><code>```         
+library(gtrendsR)  TrumpHarrisElection &lt;- gtrends(   c("Trump", "Harris", "election"),   geo = "US",   gprop = "web",   time = "2024-01-15 2024-12-17",   onlyInterest = TRUE )  the_df &lt;- TrumpHarrisElection$interest_over_time write.csv(the_df, "TrumpHarrisElection.csv", row.names = FALSE) save(the_df, file = "TrumpHarrisElection.RData") 
+```
+
+This produced both CSV and RData files in my working directory.</code></pre>
 </section>
-<section id="visual-design" class="level1">
-<h1>Visual Design</h1>
+<section id="b.-data-characteristics" class="level3">
+<h3 class="anchored" data-anchor-id="b.-data-characteristics">B. Data Characteristics</h3>
+<pre><code>**Dates and Intervals:**\
+For this eleven-month window, Google Trends aggregated the data by **week**. Each record shows the relative interest score (0–100) for a keyword in that week.
+
+
+**Variables:**
+
+    *Website*: CSV in wide format (columns for “Trump,” “Harris,” “Election”).
+
+    *R*: Long format dataframe (columns include “date,” “hits,” “keyword”), which is easier to use programmatically.
+
+-   </code></pre>
 <ul>
-<li><strong>Theme:</strong> I use the <strong>cosmo</strong> theme for a professional, readable look with strong defaults for typography and spacing.</li>
-<li><strong>Consistency:</strong> A single custom stylesheet <code>styles.css</code> applies light tweaks while preserving theme consistency.</li>
-<li><strong>Readability:</strong> The table of contents (TOC) is enabled on longer pages to aid scanning and navigation.</li>
+<li></li>
 </ul>
 </section>
-<section id="navigation-information-architecture" class="level1">
-<h1>Navigation &amp; Information Architecture</h1>
-<p>The navigation bar connects visitors to the site’s core areas: 1. <strong>Home</strong> (<code>index.qmd</code>) – brief introduction and purpose. 2. <strong>About</strong> (<code>about.qmd</code>) – short bio and contact. 3. <strong>Assignments</strong> (dropdown) – coursework organized by assignment (this page is under <strong>Assignment 1</strong>). 4. <strong>Resume/CV</strong> – a direct link to my updated resume PDF for quick access.</p>
-<p>This structure keeps coursework easy to find while also presenting my profile information and credentials.</p>
-</section>
-<section id="technical-setup" class="level1">
-<h1>Technical Setup</h1>
+<section id="c.-observed-interest-patterns" class="level3">
+<h3 class="anchored" data-anchor-id="c.-observed-interest-patterns">C. Observed Interest Patterns</h3>
+<p>When reviewing the data, several clear patterns emerged:</p>
 <ul>
-<li><strong>Authoring:</strong> <code>.qmd</code> files (Quarto Markdown) support standard Markdown and optional code chunks when needed.</li>
-<li><strong>Configuration:</strong> <code>_quarto.yml</code> centralizes the site’s title, navbar, theme, TOC, and custom CSS.</li>
-<li><strong>Build &amp; Preview:</strong> I use <code>quarto render</code> and <code>quarto preview</code> locally to test layout and links.</li>
-<li><strong>Deployment:</strong> Publishing is done to GitHub Pages, which serves the site at <code>https://&lt;username&gt;.github.io</code>.</li>
+<li></li>
+<li><p><strong>Trump</strong> maintained consistently high search interest throughout 2024, often spiking around debates, major rallies, or controversial news stories.</p></li>
+<li></li>
+<li><p><strong>Harris</strong> showed lower baseline interest compared to Trump, but her search volume rose sharply during key campaign events, especially after the Democratic National Convention and during the final weeks before the election.</p></li>
+<li></li>
+<li><p><strong>Election</strong> as a search term followed the expected seasonal curve: modest early in the year, steadily increasing during the summer and fall, and peaking in early November around Election Day (Nov 5, 2024).</p></li>
+<li></li>
 </ul>
+<p>Overall, the patterns align with the media cycle: candidate-specific terms fluctuated depending on news coverage, while the general term “election” built momentum toward the decisive date.</p>
 </section>
-<section id="rationale-future-enhancements" class="level1">
-<h1>Rationale &amp; Future Enhancements</h1>
-<p>The goal is a <strong>clean, professional, and low-maintenance</strong> site. Quarto’s structure keeps content organized, while the cosmo theme ensures a cohesive visual style. Future improvements may include a Projects/Portfolio page, tags for posts, a light/dark mode toggle, and simple analytics.</p>
-<p><strong>Summary:</strong> Built with RStudio Quarto using the <strong>cosmo</strong> theme, this site features clear navigation (Home, About, Assignments, Resume/CV) that connects readers to my content and credentials in a straightforward, professional way.</p>
-<hr>
+<section id="d.-comparison-of-the-two-methods" class="level3">
+<h3 class="anchored" data-anchor-id="d.-comparison-of-the-two-methods">D. Comparison of the Two Methods</h3>
+<ol type="1">
+<li></li>
+<li><p><strong>Format of Data</strong></p>
+<ul>
+<li></li>
+<li><p><em>Website</em>: Wide format, better for manual inspection in Excel.</p></li>
+<li></li>
+<li><p><em>R</em>: Long format, better for coding and reshaping.</p></li>
+<li></li>
+</ul></li>
+<li></li>
+<li><p><strong>Flexibility</strong></p>
+<ul>
+<li></li>
+<li><p><em>Website</em>: Manual and intuitive but limited.</p></li>
+<li></li>
+<li><p><em>R</em>: Scriptable, reproducible, and allows more terms or time ranges to be added easily.</p></li>
+<li></li>
+</ul></li>
+<li></li>
+<li><p><strong>Granularity</strong></p>
+<ul>
+<li></li>
+<li><p><em>Website</em>: Gave weekly data for this range, with daily possible for shorter spans.</p></li>
+<li></li>
+<li><p><em>R</em>: Same rules as Google’s API; in this case, also weekly.</p></li>
+<li></li>
+</ul></li>
+<li></li>
+<li><p><strong>Output Options</strong></p>
+<ul>
+<li></li>
+<li><p><em>Website</em>: Only CSV.</p></li>
+<li></li>
+<li><p><em>R</em>: CSV, RData, and other formats directly usable in R.</p></li>
+<li></li>
+</ul></li>
+<li></li>
+<li><p><strong>Ease of Use</strong></p>
+<ul>
+<li></li>
+<li><p><em>Website</em>: Quick and user-friendly.</p></li>
+<li></li>
+<li><p><em>R</em>: Requires setup but far more efficient for repeated analysis.</p></li>
+<li></li>
+</ul></li>
+<li></li>
+</ol>
+</section>
+<section id="e.-conclusion" class="level3">
+<h3 class="anchored" data-anchor-id="e.-conclusion">E. Conclusion</h3>
+<p>By comparing both methods, I confirmed that Google Trends data is consistent across platforms but differs in format and ease of use. The website is suited for one-time exploration, while <code>gtrendsR</code> is preferable for reproducibility and advanced analysis. Looking at the election cycle specifically, Trump consistently drew more search interest, Harris had event-driven spikes, and the general term “election” predictably peaked around Election Day. Together, these tools not only provide raw data but also highlight how public attention shifts throughout a campaign season.</p>
 
 
 </section>
