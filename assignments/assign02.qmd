@@ -1,0 +1,172 @@
+---
+title: "Assignment 2: Comparison between Google Trends Website and R"
+author: "Nedret Sen Cavus"
+---
+
+### A. Data Collection
+
+To examine search interest related to the 2024 U.S. presidential election, I collected Google Trends data for the search terms *Trump*, *Kamala Harris*, and *Election* using two approaches:
+
+1.  **Google Trends Website**\
+    On the [Google Trends website](https://trends.google.com/), I entered the three terms, set the location to the United States, and chose the custom time interval **January 15, 2024 to December 17, 2024**. This range covers the election process from the early primaries through Election Day. I downloaded the dataset as a CSV file.
+
+2.    **R with gtrendsR Package**\
+    I installed and loaded the `gtrendsR` package in RStudio. Using the custom time range option, I ran:
+
+    ```         
+    library(gtrendsR)  TrumpHarrisElection <- gtrends(   c("Trump", "Harris", "election"),   geo = "US",   gprop = "web",   time = "2024-01-15 2024-12-17",   onlyInterest = TRUE )  the_df <- TrumpHarrisElection$interest_over_time write.csv(the_df, "TrumpHarrisElection.csv", row.names = FALSE) save(the_df, file = "TrumpHarrisElection.RData") 
+    ```
+
+    This produced both CSV and RData files in my working directory.
+
+
+### B. Data Characteristics
+
+
+    **Dates and Intervals:**\
+    For this eleven-month window, Google Trends aggregated the data by **week**. Each record shows the relative interest score (0–100) for a keyword in that week.
+
+
+    **Variables:**
+
+        *Website*: CSV in wide format (columns for “Trump,” “Harris,” “Election”).
+
+        *R*: Long format dataframe (columns include “date,” “hits,” “keyword”), which is easier to use programmatically.
+
+    -   
+
+-   
+
+### C. Observed Interest Patterns
+
+When reviewing the data, several clear patterns emerged:
+
+-   
+
+-   
+
+    **Trump** maintained consistently high search interest throughout 2024, often spiking around debates, major rallies, or controversial news stories.
+
+-   
+
+-   
+
+    **Harris** showed lower baseline interest compared to Trump, but her search volume rose sharply during key campaign events, especially after the Democratic National Convention and during the final weeks before the election.
+
+-   
+
+-   
+
+    **Election** as a search term followed the expected seasonal curve: modest early in the year, steadily increasing during the summer and fall, and peaking in early November around Election Day (Nov 5, 2024).
+
+-   
+
+Overall, the patterns align with the media cycle: candidate-specific terms fluctuated depending on news coverage, while the general term “election” built momentum toward the decisive date.
+
+### D. Comparison of the Two Methods
+
+1.  
+
+2.  
+
+    **Format of Data**
+
+    -   
+
+    -   
+
+        *Website*: Wide format, better for manual inspection in Excel.
+
+    -   
+
+    -   
+
+        *R*: Long format, better for coding and reshaping.
+
+    -   
+
+3.  
+
+4.  
+
+    **Flexibility**
+
+    -   
+
+    -   
+
+        *Website*: Manual and intuitive but limited.
+
+    -   
+
+    -   
+
+        *R*: Scriptable, reproducible, and allows more terms or time ranges to be added easily.
+
+    -   
+
+5.  
+
+6.  
+
+    **Granularity**
+
+    -   
+
+    -   
+
+        *Website*: Gave weekly data for this range, with daily possible for shorter spans.
+
+    -   
+
+    -   
+
+        *R*: Same rules as Google’s API; in this case, also weekly.
+
+    -   
+
+7.  
+
+8.  
+
+    **Output Options**
+
+    -   
+
+    -   
+
+        *Website*: Only CSV.
+
+    -   
+
+    -   
+
+        *R*: CSV, RData, and other formats directly usable in R.
+
+    -   
+
+9.  
+
+10. 
+
+    **Ease of Use**
+
+    -   
+
+    -   
+
+        *Website*: Quick and user-friendly.
+
+    -   
+
+    -   
+
+        *R*: Requires setup but far more efficient for repeated analysis.
+
+    -   
+
+11. 
+
+### E. Conclusion
+
+By comparing both methods, I confirmed that Google Trends data is consistent across platforms but differs in format and ease of use. The website is suited for one-time exploration, while `gtrendsR` is preferable for reproducibility and advanced analysis. Looking at the election cycle specifically, Trump consistently drew more search interest, Harris had event-driven spikes, and the general term “election” predictably peaked around Election Day. Together, these tools not only provide raw data but also highlight how public attention shifts throughout a campaign season.
