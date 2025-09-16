@@ -15,6 +15,8 @@ website:
             text: Assignment 1
           - href: assignments/assign02.qmd
             text: Assignment 2
+          - href: assignments/assign03.qmd
+            text: Assignment 3
     right:
       - href: resume/NedretSenCavus_Resume.pdf
         text: Resume/CV
