@@ -1,0 +1,7 @@
+---
+title: "Home"
+---
+
+# Welcome
+
+This is my personal website for the course EPPS 6302 Methods of Data Collection and Production. Use the navigation bar to access **About**, **Assignments**, and my **Resume/CV**.
