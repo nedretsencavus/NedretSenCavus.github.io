@@ -82,12 +82,5 @@
     "title": "Assignment 3: Mapping Census Data — Median Rent & SNAP in Washington Counties",
     "section": "What I Learned (Interpretation)",
     "text": "What I Learned (Interpretation)\n\nMedian rent is highest in/near large urban counties, while many rural counties show lower rents—consistent with stronger demand and tighter housing markets around cities.\nThe SNAP tables reflect population size as much as need: large counties (e.g., King) naturally have more SNAP households in absolute numbers. To compare reliance, a rate (e.g., % of households with SNAP) would be more informative than a raw count.\nMargins of error vary widely; smaller counties often have relatively larger MOEs, reminding me that ACS is a survey and precision differs by place/size."
-  },
-  {
-    "objectID": "assignments/assign03/assign03.html#reproducibility-notes",
-    "href": "assignments/assign03/assign03.html#reproducibility-notes",
-    "title": "Assignment 3: Mapping Census Data — Median Rent & SNAP in Washington Counties",
-    "section": "Reproducibility Notes",
-    "text": "Reproducibility Notes\n\nData: ACS 2019–2023 5-year; geography = county; state = WA; variables B25064_001 (median rent) and B22010_002 (SNAP households).\nPackages: tidycensus, tigris, sf, dplyr, ggplot2, tidyr, stringr, knitr, scales.\nMy Census API key is stored locally and accessed via Sys.getenv(\"CENSUS_API_KEY\").\nTo rerun from a clean session: restart R, ensure the packages are installed, and knit."
   }
 ]

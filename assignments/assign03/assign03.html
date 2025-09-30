@@ -179,7 +179,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#map-median-gross-rent" id="toc-map-median-gross-rent" class="nav-link" data-scroll-target="#map-median-gross-rent">Map: Median Gross Rent</a></li>
   <li><a href="#tables-snap-households-counts" id="toc-tables-snap-households-counts" class="nav-link" data-scroll-target="#tables-snap-households-counts">Tables: SNAP Households (Counts)</a></li>
   <li><a href="#what-i-learned-interpretation" id="toc-what-i-learned-interpretation" class="nav-link" data-scroll-target="#what-i-learned-interpretation">What I Learned (Interpretation)</a></li>
-  <li><a href="#reproducibility-notes" id="toc-reproducibility-notes" class="nav-link" data-scroll-target="#reproducibility-notes">Reproducibility Notes</a></li>
   </ul>
 </nav>
     </div>
@@ -532,15 +531,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Median rent</strong> is highest in/near large urban counties, while many rural counties show lower rents—consistent with stronger demand and tighter housing markets around cities.</li>
 <li>The <strong>SNAP tables</strong> reflect <strong>population size</strong> as much as need: large counties (e.g., King) naturally have more SNAP households in absolute numbers. To compare reliance, a <strong>rate</strong> (e.g., % of households with SNAP) would be more informative than a raw count.</li>
 <li><strong>Margins of error</strong> vary widely; smaller counties often have relatively larger MOEs, reminding me that ACS is a survey and precision differs by place/size.</li>
-</ul>
-</section>
-<section id="reproducibility-notes" class="level2">
-<h2 class="anchored" data-anchor-id="reproducibility-notes">Reproducibility Notes</h2>
-<ul>
-<li>Data: <strong>ACS 2019–2023 5-year</strong>; geography = county; state = WA; variables <strong>B25064_001</strong> (median rent) and <strong>B22010_002</strong> (SNAP households).</li>
-<li>Packages: <code>tidycensus, tigris, sf, dplyr, ggplot2, tidyr, stringr, knitr, scales</code>.</li>
-<li>My Census API key is stored locally and accessed via <code>Sys.getenv("CENSUS_API_KEY")</code>.</li>
-<li>To rerun from a clean session: restart R, ensure the packages are installed, and knit.</li>
 </ul>
 
 
