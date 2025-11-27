@@ -8,7 +8,7 @@
 
 <meta name="author" content="Nedret Sen Cavus">
 
-<title>Assignment 3: Mapping Census Data — Median Rent &amp; SNAP in Washington Counties – Nedret Sen Cavus</title>
+<title>Assignment 4: Webscraping 1 with R (rvest) – Nedret Sen Cavus</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -179,10 +179,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#objective" id="toc-objective" class="nav-link active" data-scroll-target="#objective">Objective</a></li>
-  <li><a href="#what-i-did-methods" id="toc-what-i-did-methods" class="nav-link" data-scroll-target="#what-i-did-methods">What I Did (Methods)</a></li>
-  <li><a href="#map-median-gross-rent" id="toc-map-median-gross-rent" class="nav-link" data-scroll-target="#map-median-gross-rent">Map: Median Gross Rent</a></li>
-  <li><a href="#tables-snap-households-counts" id="toc-tables-snap-households-counts" class="nav-link" data-scroll-target="#tables-snap-households-counts">Tables: SNAP Households (Counts)</a></li>
-  <li><a href="#what-i-learned-interpretation" id="toc-what-i-learned-interpretation" class="nav-link" data-scroll-target="#what-i-learned-interpretation">What I Learned (Interpretation)</a></li>
+  <li><a href="#a.-setup" id="toc-a.-setup" class="nav-link" data-scroll-target="#a.-setup">A. Setup</a></li>
+  <li><a href="#b.-data-collection-and-cleaning" id="toc-b.-data-collection-and-cleaning" class="nav-link" data-scroll-target="#b.-data-collection-and-cleaning">B. Data Collection and Cleaning</a>
+  <ul class="collapse">
+  <li><a href="#foreign-exchange-reserves" id="toc-foreign-exchange-reserves" class="nav-link" data-scroll-target="#foreign-exchange-reserves">1. Foreign-Exchange Reserves</a></li>
+  <li><a href="#life-expectancy" id="toc-life-expectancy" class="nav-link" data-scroll-target="#life-expectancy">2. Life Expectancy</a></li>
+  <li><a href="#nobel-laureates" id="toc-nobel-laureates" class="nav-link" data-scroll-target="#nobel-laureates">3. Nobel Laureates</a></li>
+  </ul></li>
+  <li><a href="#c.-data-plan-for-research" id="toc-c.-data-plan-for-research" class="nav-link" data-scroll-target="#c.-data-plan-for-research">C. Data Plan for Research</a></li>
   </ul>
 </nav>
     </div>
@@ -191,7 +195,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Assignment 3: Mapping Census Data — Median Rent &amp; SNAP in Washington Counties</h1>
+<h1 class="title">Assignment 4: Webscraping 1 with R (rvest)</h1>
 </div>
 
 
@@ -216,326 +220,177 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="objective" class="level2">
 <h2 class="anchored" data-anchor-id="objective">Objective</h2>
-<p>For this assignment, I used <strong>tidycensus</strong> to pull American Community Survey (ACS) 2019–2023 five-year estimates, tidy them, and create two outputs:</p>
+<p>This assignment focuses on scraping, cleaning, and organizing data from Wikipedia using the <code>rvest</code> and <code>tidyverse</code> packages. The goal is to transform unstructured HTML tables into tidy datasets suitable for analysis.</p>
+<p>The three datasets targeted are:</p>
 <ol type="1">
-<li>a <strong>choropleth map</strong> of <strong>median gross rent</strong> by county in Washington, and</li>
-<li><strong>top/bottom-10 tables</strong> of <strong>households with SNAP benefits</strong> by county.</li>
+<li><strong>Foreign Exchange Reserves</strong></li>
+<li><strong>Life Expectancy</strong></li>
+<li><strong>Nobel Laureates by Country</strong></li>
 </ol>
-<p>Finally, I briefly interpret what the patterns suggest.</p>
 </section>
-<section id="what-i-did-methods" class="level2">
-<h2 class="anchored" data-anchor-id="what-i-did-methods">What I Did (Methods)</h2>
-<p>I set up my Census API key locally and loaded the needed packages (<strong>tidycensus, tigris, sf, dplyr, ggplot2, tidyr, stringr, knitr, scales</strong>). I focused on <strong>Washington State</strong> at the <strong>county</strong> level and selected:</p>
+<section id="a.-setup" class="level2">
+<h2 class="anchored" data-anchor-id="a.-setup">A. Setup</h2>
+<p>I used the rvest package for scraping the HTML data and stringr for text cleaning (splitting strings to remove footnotes).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rvest)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="b.-data-collection-and-cleaning" class="level2">
+<h2 class="anchored" data-anchor-id="b.-data-collection-and-cleaning">B. Data Collection and Cleaning</h2>
+<section id="foreign-exchange-reserves" class="level3">
+<h3 class="anchored" data-anchor-id="foreign-exchange-reserves">1. Foreign-Exchange Reserves</h3>
+<p>I scraped the <em>List of countries by foreign-exchange reserves</em>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">'https://en.wikipedia.org/wiki/List_of_countries_by_foreign-exchange_reserves'</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>wikiforreserve <span class="ot">&lt;-</span> <span class="fu">read_html</span>(url)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>foreignreserve <span class="ot">&lt;-</span> wikiforreserve <span class="sc">%&gt;%</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">html_nodes</span>(<span class="at">xpath=</span><span class="st">'//table[contains(@class, "wikitable")][1]'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">html_table</span>(<span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>fores <span class="ot">=</span> foreignreserve[[<span class="dv">1</span>]]</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(fores) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Rank"</span>, <span class="st">"Country"</span>, <span class="st">"Forexres"</span>, <span class="st">"Date"</span>, <span class="st">"Change"</span>, <span class="st">"Sources"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: The `value` argument of `names&lt;-()` must have the same length as `x` as of
+tibble 3.0.0.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: The `value` argument of `names&lt;-()` can't be empty as of tibble 3.0.0.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fores<span class="sc">$</span>newdate <span class="ot">=</span> <span class="fu">str_split_fixed</span>(fores<span class="sc">$</span>Date, <span class="st">"</span><span class="sc">\\</span><span class="st">["</span>, <span class="at">n =</span> <span class="dv">2</span>)[, <span class="dv">1</span>]</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>fores<span class="sc">$</span>newdate <span class="ot">=</span> <span class="fu">trimws</span>(fores<span class="sc">$</span>newdate)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>fores<span class="sc">$</span>Rank <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">gsub</span>(<span class="st">"[^0-9]"</span>, <span class="st">""</span>, fores<span class="sc">$</span>Rank))</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>fores<span class="sc">$</span>Country <span class="ot">&lt;-</span> <span class="fu">str_split_fixed</span>(fores<span class="sc">$</span>Country, <span class="st">"</span><span class="sc">\\</span><span class="st">["</span>, <span class="at">n =</span> <span class="dv">2</span>)[, <span class="dv">1</span>]</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>fores<span class="sc">$</span>Country <span class="ot">&lt;-</span> <span class="fu">trimws</span>(fores<span class="sc">$</span>Country)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(fores, <span class="st">"fx_reserves_clean.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">message</span>(<span class="st">"FX Reserves Scraped: "</span>, <span class="fu">nrow</span>(fores), <span class="st">" rows."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="life-expectancy" class="level3">
+<h3 class="anchored" data-anchor-id="life-expectancy">2. Life Expectancy</h3>
+<p>This table required selecting specific columns for overall, female, and male life expectancy. I calculated the <strong>gender gap</strong> (Female - Male) to add analytical value.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>url_life <span class="ot">&lt;-</span> <span class="st">"https://en.wikipedia.org/wiki/List_of_countries_by_life_expectancy"</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>wiki_life <span class="ot">&lt;-</span> <span class="fu">read_html</span>(url_life)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>life_data_raw <span class="ot">&lt;-</span> wiki_life <span class="sc">%&gt;%</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">html_nodes</span>(<span class="at">xpath=</span><span class="st">'//table[contains(@class, "wikitable")][1]'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">html_table</span>(<span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>life_df <span class="ot">&lt;-</span> life_data_raw[[<span class="dv">1</span>]]</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>life_df <span class="ot">&lt;-</span> life_df[, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">3</span>)]</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(life_df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Country"</span>, <span class="st">"Overall"</span>, <span class="st">"Female"</span>, <span class="st">"Male"</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>life_df<span class="sc">$</span>Country <span class="ot">&lt;-</span> <span class="fu">str_split_fixed</span>(life_df<span class="sc">$</span>Country, <span class="st">"</span><span class="sc">\\</span><span class="st">["</span>, <span class="at">n =</span> <span class="dv">2</span>)[, <span class="dv">1</span>]</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>life_df<span class="sc">$</span>Overall <span class="ot">&lt;-</span> <span class="fu">str_split_fixed</span>(life_df<span class="sc">$</span>Overall, <span class="st">"</span><span class="sc">\\</span><span class="st">["</span>, <span class="at">n =</span> <span class="dv">2</span>)[, <span class="dv">1</span>]</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>life_df<span class="sc">$</span>Female  <span class="ot">&lt;-</span> <span class="fu">str_split_fixed</span>(life_df<span class="sc">$</span>Female, <span class="st">"</span><span class="sc">\\</span><span class="st">["</span>, <span class="at">n =</span> <span class="dv">2</span>)[, <span class="dv">1</span>]</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>life_df<span class="sc">$</span>Male    <span class="ot">&lt;-</span> <span class="fu">str_split_fixed</span>(life_df<span class="sc">$</span>Male, <span class="st">"</span><span class="sc">\\</span><span class="st">["</span>, <span class="at">n =</span> <span class="dv">2</span>)[, <span class="dv">1</span>]</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to numeric</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>life_df<span class="sc">$</span>Overall <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(life_df<span class="sc">$</span>Overall)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: NAs introduced by coercion</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>life_df<span class="sc">$</span>Female  <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(life_df<span class="sc">$</span>Female)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: NAs introduced by coercion</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>life_df<span class="sc">$</span>Male    <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(life_df<span class="sc">$</span>Male)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: NAs introduced by coercion</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Gender Gap</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>life_df<span class="sc">$</span>Gender_Gap <span class="ot">&lt;-</span> life_df<span class="sc">$</span>Female <span class="sc">-</span> life_df<span class="sc">$</span>Male</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove rows with missing Country info</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>life_df <span class="ot">&lt;-</span> life_df[<span class="sc">!</span><span class="fu">is.na</span>(life_df<span class="sc">$</span>Country) <span class="sc">&amp;</span> life_df<span class="sc">$</span>Country <span class="sc">!=</span> <span class="st">"World"</span>, ]</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Sort</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>life_df <span class="ot">&lt;-</span> life_df[<span class="fu">order</span>(<span class="sc">-</span>life_df<span class="sc">$</span>Overall), ]</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(life_df, <span class="st">"life_expectancy_clean.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="fu">message</span>(<span class="st">"Life Expectancy Scraped: "</span>, <span class="fu">nrow</span>(life_df), <span class="st">" rows."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="nobel-laureates" class="level3">
+<h3 class="anchored" data-anchor-id="nobel-laureates">3. Nobel Laureates</h3>
+<p>I scraped the Nobel Laureates table and and cleaned it up.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>url_nobel <span class="ot">&lt;-</span> <span class="st">"https://en.wikipedia.org/wiki/List_of_Nobel_laureates_by_country"</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>wiki_nobel <span class="ot">&lt;-</span> <span class="fu">read_html</span>(url_nobel)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Get all tables</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>nobel_table <span class="ot">&lt;-</span> wiki_nobel <span class="sc">%&gt;%</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">html_nodes</span>(<span class="at">xpath=</span><span class="st">'//table[contains(@class, "wikitable")][1]'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">html_table</span>(<span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Pick the table with the most rows</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>nobel_df <span class="ot">&lt;-</span> nobel_table[[<span class="dv">1</span>]]</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(nobel_df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Country"</span>, <span class="st">"Number of Nobel Prizes"</span>)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean Country Name (remove footnotes like [1])</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>nobel_df<span class="sc">$</span>Country <span class="ot">&lt;-</span> <span class="fu">str_split_fixed</span>(nobel_df<span class="sc">$</span>Country, <span class="st">"</span><span class="sc">\\</span><span class="st">["</span>, <span class="at">n =</span> <span class="dv">2</span>)[, <span class="dv">1</span>]</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>nobel_df<span class="sc">$</span>Country <span class="ot">&lt;-</span> <span class="fu">trimws</span>(nobel_df<span class="sc">$</span>Country)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(nobel_df, <span class="st">"nobel_clean.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="fu">message</span>(<span class="st">"Nobel Data Scraped: "</span>, <span class="fu">nrow</span>(nobel_df), <span class="st">" rows."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="c.-data-plan-for-research" class="level2">
+<h2 class="anchored" data-anchor-id="c.-data-plan-for-research">C. Data Plan for Research</h2>
+<p>Acquiring web data for research requires a robust and ethical “Data Plan.” If I were to scale this project, I would follow these steps:</p>
+<ol type="1">
+<li><strong>Source Verification &amp; Ethics:</strong>
 <ul>
-<li><strong>Median gross rent</strong> (B25064_001), and</li>
-<li><strong>Households with SNAP benefits</strong> (B22010_002).</li>
-</ul>
-<p>I downloaded <strong>ACS 2019–2023 (5-year)</strong> data with geometry, reshaped to a wide table (estimates + MOEs), then made a map for rent and tables for SNAP counts.</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">rent =</span> <span class="st">"B25064_001"</span>,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">snap =</span> <span class="st">"B22010_002"</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>wa_raw <span class="ot">&lt;-</span> <span class="fu">get_acs</span>(</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">geography =</span> <span class="st">"county"</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">state =</span> <span class="st">"WA"</span>,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">variables =</span> vars,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2023</span>,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">survey =</span> <span class="st">"acs5"</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">geometry =</span> <span class="cn">TRUE</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>geom_tbl <span class="ot">&lt;-</span> wa_raw <span class="sc">|&gt;</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(GEOID, geometry) <span class="sc">|&gt;</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_as_sf</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>(GEOID, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>acs_wide <span class="ot">&lt;-</span> wa_raw <span class="sc">|&gt;</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_drop_geometry</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(GEOID, NAME, variable, estimate, moe) <span class="sc">|&gt;</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> variable,</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(estimate, moe),</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_glue =</span> <span class="st">"{.value}_{variable}"</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimate_rent_median =</span> estimate_rent,</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">moe_rent_median      =</span> moe_rent,</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimate_snap_hh     =</span> estimate_snap,</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">moe_snap_hh          =</span> moe_snap</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">county =</span> stringr<span class="sc">::</span><span class="fu">str_replace</span>(NAME, <span class="st">", Washington"</span>, <span class="st">""</span>)</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(geom_tbl, <span class="at">by =</span> <span class="st">"GEOID"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_as_sf</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</section>
-<section id="map-median-gross-rent" class="level2">
-<h2 class="anchored" data-anchor-id="map-median-gross-rent">Map: Median Gross Rent</h2>
-<p>The map shows how median rent varies across Washington counties. Lighter shading indicates higher rent.</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(acs_wide) <span class="sc">+</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> estimate_rent_median), <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_dollar</span>(<span class="at">accuracy =</span> <span class="dv">1</span>),</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Median Rent"</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Median Gross Rent by County"</span>,</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Washington • ACS 2019–2023 (5-year) • variable: B25064_001"</span>,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Source: U.S. Census Bureau, ACS via tidycensus"</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span>,</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>)</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="assign03_files/figure-html/map-median-rent-1.png" class="img-fluid figure-img" width="768"></p>
-<figcaption>Median Gross Rent (USD), Washington counties — ACS 2019–2023 (5-year)</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="tables-snap-households-counts" class="level2">
-<h2 class="anchored" data-anchor-id="tables-snap-households-counts">Tables: SNAP Households (Counts)</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>top10_snap <span class="ot">&lt;-</span> acs_wide <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(estimate_snap_hh)) <span class="sc">|&gt;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">Rank =</span> <span class="fu">row_number</span>(),</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">County =</span> county,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">SNAP households</span><span class="st">`</span> <span class="ot">=</span> estimate_snap_hh,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">MOE (±)</span><span class="st">`</span> <span class="ot">=</span> moe_snap_hh</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>bottom10_snap <span class="ot">&lt;-</span> acs_wide <span class="sc">|&gt;</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(estimate_snap_hh) <span class="sc">|&gt;</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">Rank =</span> <span class="fu">row_number</span>(),</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">County =</span> county,</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">SNAP households</span><span class="st">`</span> <span class="ot">=</span> estimate_snap_hh,</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">MOE (±)</span><span class="st">`</span> <span class="ot">=</span> moe_snap_hh</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(top10_snap, <span class="at">caption =</span> <span class="st">"Top 10 counties by SNAP households (ACS 2019–2023, WA)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Top 10 counties by SNAP households (ACS 2019–2023, WA)</caption>
-<colgroup>
-<col style="width: 6%">
-<col style="width: 22%">
-<col style="width: 20%">
-<col style="width: 10%">
-<col style="width: 40%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: right;">Rank</th>
-<th style="text-align: left;">County</th>
-<th style="text-align: right;">SNAP households</th>
-<th style="text-align: right;">MOE (±)</th>
-<th style="text-align: left;">geometry</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">1</td>
-<td style="text-align: left;">King County</td>
-<td style="text-align: right;">75651</td>
-<td style="text-align: right;">2409</td>
-<td style="text-align: left;">MULTIPOLYGON (((-122.4369 4…</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">2</td>
-<td style="text-align: left;">Pierce County</td>
-<td style="text-align: right;">40978</td>
-<td style="text-align: right;">1665</td>
-<td style="text-align: left;">MULTIPOLYGON (((-122.6406 4…</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">3</td>
-<td style="text-align: left;">Spokane County</td>
-<td style="text-align: right;">34595</td>
-<td style="text-align: right;">1421</td>
-<td style="text-align: left;">MULTIPOLYGON (((-117.823 47…</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">4</td>
-<td style="text-align: left;">Snohomish County</td>
-<td style="text-align: right;">28348</td>
-<td style="text-align: right;">1531</td>
-<td style="text-align: left;">MULTIPOLYGON (((-122.3316 4…</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">5</td>
-<td style="text-align: left;">Clark County</td>
-<td style="text-align: right;">23395</td>
-<td style="text-align: right;">1211</td>
-<td style="text-align: left;">MULTIPOLYGON (((-122.796 45…</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">6</td>
-<td style="text-align: left;">Yakima County</td>
-<td style="text-align: right;">18843</td>
-<td style="text-align: right;">936</td>
-<td style="text-align: left;">MULTIPOLYGON (((-121.5203 4…</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">7</td>
-<td style="text-align: left;">Thurston County</td>
-<td style="text-align: right;">13368</td>
-<td style="text-align: right;">962</td>
-<td style="text-align: left;">MULTIPOLYGON (((-123.2009 4…</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">8</td>
-<td style="text-align: left;">Benton County</td>
-<td style="text-align: right;">11014</td>
-<td style="text-align: right;">789</td>
-<td style="text-align: left;">MULTIPOLYGON (((-119.8751 4…</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">9</td>
-<td style="text-align: left;">Whatcom County</td>
-<td style="text-align: right;">10519</td>
-<td style="text-align: right;">792</td>
-<td style="text-align: left;">MULTIPOLYGON (((-122.5933 4…</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">10</td>
-<td style="text-align: left;">Kitsap County</td>
-<td style="text-align: right;">10381</td>
-<td style="text-align: right;">806</td>
-<td style="text-align: left;">MULTIPOLYGON (((-122.5049 4…</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(bottom10_snap, <span class="at">caption =</span> <span class="st">"Bottom 10 counties by SNAP households (ACS 2019–2023, WA)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Bottom 10 counties by SNAP households (ACS 2019–2023, WA)</caption>
-<colgroup>
-<col style="width: 6%">
-<col style="width: 25%">
-<col style="width: 20%">
-<col style="width: 10%">
-<col style="width: 38%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: right;">Rank</th>
-<th style="text-align: left;">County</th>
-<th style="text-align: right;">SNAP households</th>
-<th style="text-align: right;">MOE (±)</th>
-<th style="text-align: left;">geometry</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">1</td>
-<td style="text-align: left;">Wahkiakum County</td>
-<td style="text-align: right;">119</td>
-<td style="text-align: right;">48</td>
-<td style="text-align: left;">MULTIPOLYGON (((-123.7278 4…</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">2</td>
-<td style="text-align: left;">Garfield County</td>
-<td style="text-align: right;">144</td>
-<td style="text-align: right;">69</td>
-<td style="text-align: left;">MULTIPOLYGON (((-117.8616 4…</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">3</td>
-<td style="text-align: left;">Columbia County</td>
-<td style="text-align: right;">283</td>
-<td style="text-align: right;">105</td>
-<td style="text-align: left;">MULTIPOLYGON (((-118.2415 4…</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">4</td>
-<td style="text-align: left;">Lincoln County</td>
-<td style="text-align: right;">459</td>
-<td style="text-align: right;">102</td>
-<td style="text-align: left;">MULTIPOLYGON (((-118.9788 4…</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">5</td>
-<td style="text-align: left;">San Juan County</td>
-<td style="text-align: right;">490</td>
-<td style="text-align: right;">78</td>
-<td style="text-align: left;">MULTIPOLYGON (((-122.7666 4…</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">6</td>
-<td style="text-align: left;">Ferry County</td>
-<td style="text-align: right;">558</td>
-<td style="text-align: right;">118</td>
-<td style="text-align: left;">MULTIPOLYGON (((-118.8696 4…</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">7</td>
-<td style="text-align: left;">Skamania County</td>
-<td style="text-align: right;">626</td>
-<td style="text-align: right;">160</td>
-<td style="text-align: left;">MULTIPOLYGON (((-122.2501 4…</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">8</td>
-<td style="text-align: left;">Pend Oreille County</td>
-<td style="text-align: right;">1067</td>
-<td style="text-align: right;">187</td>
-<td style="text-align: left;">MULTIPOLYGON (((-117.6294 4…</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">9</td>
-<td style="text-align: left;">Adams County</td>
-<td style="text-align: right;">1107</td>
-<td style="text-align: right;">232</td>
-<td style="text-align: left;">MULTIPOLYGON (((-119.3694 4…</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">10</td>
-<td style="text-align: left;">Klickitat County</td>
-<td style="text-align: right;">1229</td>
-<td style="text-align: right;">198</td>
-<td style="text-align: left;">MULTIPOLYGON (((-121.6126 4…</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</section>
-<section id="what-i-learned-interpretation" class="level2">
-<h2 class="anchored" data-anchor-id="what-i-learned-interpretation">What I Learned (Interpretation)</h2>
+<li>Check <code>robots.txt</code> (e.g., <code>wikipedia.org/robots.txt</code>) to ensure scraping is permitted.</li>
+<li>Prioritize official APIs (e.g., World Bank API) over scraping HTML, as HTML structure is brittle and changes frequently.</li>
+</ul></li>
+<li><strong>Data Pipeline:</strong>
 <ul>
-<li><strong>Median rent</strong> is highest in/near large urban counties, while many rural counties show lower rents—consistent with stronger demand and tighter housing markets around cities.</li>
-<li>The <strong>SNAP tables</strong> reflect <strong>population size</strong> as much as need: large counties (e.g., King) naturally have more SNAP households in absolute numbers. To compare reliance, a <strong>rate</strong> (e.g., % of households with SNAP) would be more informative than a raw count.</li>
-<li><strong>Margins of error</strong> vary widely; smaller counties often have relatively larger MOEs, reminding me that ACS is a survey and precision differs by place/size.</li>
-</ul>
+<li><strong>Raw Storage:</strong> Always save the raw HTML or JSON responses immediately (<code>writeLines</code> or <code>saveRDS</code>). This allows re-parsing later without re-pinging the server.</li>
+<li><strong>Cleaning Layer:</strong> Use the functions developed above (<code>safe_parse_num</code>, <code>ensure_country_col</code>) to normalize data types immediately.</li>
+<li><strong>Validation:</strong> Implement tests (e.g., “Does every row have a Country?”, “Are reserves &gt; 0?”) to flag scraping errors automatically.</li>
+</ul></li>
+<li><strong>Maintenance:</strong>
+<ul>
+<li>Wikipedia tables often change IDs or column orders. Code should be written to find columns by <em>name</em> (using <code>matches()</code>), not by index position (e.g., <code>df[,5]</code>), to prevent breakage when columns move.</li>
+</ul></li>
+</ol>
 
 
 </section>
