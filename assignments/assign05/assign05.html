@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Nedret Sen Cavus">
 
-<title>About Me – Nedret Sen Cavus</title>
+<title>Assignment 5: Government Data Scraping Report – Nedret Sen Cavus</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,26 +21,61 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-dfb324f25d9b1687192fa8be62ac8f9c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-dfb324f25d9b1687192fa8be62ac8f9c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -69,7 +105,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -79,7 +115,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Nedret Sen Cavus</span>
     </a>
   </div>
@@ -90,11 +126,11 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html"> 
+    <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./about.html" aria-current="page"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About Me</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -103,23 +139,23 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-assignments">    
         <li>
-    <a class="dropdown-item" href="./assignments/assign01.html">
+    <a class="dropdown-item" href="../../assignments/assign01.html">
  <span class="dropdown-text">Assignment 1</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./assignments/assign02.html">
+    <a class="dropdown-item" href="../../assignments/assign02.html">
  <span class="dropdown-text">Assignment 2</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./assignments/assign03/assign03.html">
+    <a class="dropdown-item" href="../../assignments/assign03/assign03.html">
  <span class="dropdown-text">Assignment 3</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./assignments/assign04/assign04.html">
+    <a class="dropdown-item" href="../../assignments/assign04/assign04.html">
  <span class="dropdown-text">Assignment 4</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./assignments/assign05/assign05.html">
+    <a class="dropdown-item" href="../../assignments/assign05/assign05.html">
  <span class="dropdown-text">Assignment 5</span></a>
   </li>  
     </ul>
@@ -127,7 +163,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./resume/NedretSenCavus_Resume.pdf"> 
+    <a class="nav-link" href="../../resume/NedretSenCavus_Resume.pdf"> 
 <span class="menu-text">Resume/CV</span></a>
   </li>  
 </ul>
@@ -146,7 +182,14 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#believes-data-can-and-should-be-used-to-make-the-world-more-fair-and-inclusive" id="toc-believes-data-can-and-should-be-used-to-make-the-world-more-fair-and-inclusive" class="nav-link active" data-scroll-target="#believes-data-can-and-should-be-used-to-make-the-world-more-fair-and-inclusive">Believes data can and should be used to make the world more fair and inclusive</a></li>
+  <li><a href="#objective" id="toc-objective" class="nav-link active" data-scroll-target="#objective">Objective</a></li>
+  <li><a href="#a.-the-scraping-process" id="toc-a.-the-scraping-process" class="nav-link" data-scroll-target="#a.-the-scraping-process">A. The Scraping Process</a></li>
+  <li><a href="#b.-difficulties-encountered" id="toc-b.-difficulties-encountered" class="nav-link" data-scroll-target="#b.-difficulties-encountered">B. Difficulties Encountered</a></li>
+  <li><a href="#c.-usability-and-improvement" id="toc-c.-usability-and-improvement" class="nav-link" data-scroll-target="#c.-usability-and-improvement">C. Usability and Improvement</a>
+  <ul class="collapse">
+  <li><a href="#how-usable-is-the-scraped-data" id="toc-how-usable-is-the-scraped-data" class="nav-link" data-scroll-target="#how-usable-is-the-scraped-data">1. How usable is the scraped data?</a></li>
+  <li><a href="#how-to-improve" id="toc-how-to-improve" class="nav-link" data-scroll-target="#how-to-improve">2. How to improve?</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -155,13 +198,19 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">About Me</h1>
+<h1 class="title">Assignment 5: Government Data Scraping Report</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Nedret Sen Cavus </p>
+          </div>
+  </div>
     
   
     
@@ -172,17 +221,55 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Hi! I’m Nedret Sen Cavus, and this fall I’m beginning my Master of Science in Social Data Analytics and Research at The University of Texas at Dallas — the next step toward my dream of earning a PhD in Social Psychology and becoming a researcher–professor.</p>
-<p>I’ve always been fascinated by how people think, feel, and act toward others — especially when group identities, social inequalities, and crisis situations are involved. My passion lies in understanding intergroup relations, social injustice, and how social identity shapes prosocial behavior.</p>
-<p>I hold a B.A. in Psychology (Cum Laude) from Hacettepe University, and during my undergrad I spent six months at Radboud University in the Netherlands through the Erasmus+ exchange program, focusing on intergroup relations and prosocial/antisocial behavior.</p>
-<p>I’ve also worked as a Graduate Research Assistant in Prof.&nbsp;Linda Tropp’s Intergroup Relations &amp; Social Justice Lab at the University of Massachusetts Amherst, where I helped design research projects, collect and analyze data (ANOVA, regression, correlations), and explore ways to promote social cohesion between diverse groups.</p>
-<p>Beyond the academic details, I’m someone who:</p>
-<p>Loves diving into books and new research articles</p>
-<p>Thrives in collaborative, idea-driven environments</p>
-<section id="believes-data-can-and-should-be-used-to-make-the-world-more-fair-and-inclusive" class="level2">
-<h2 class="anchored" data-anchor-id="believes-data-can-and-should-be-used-to-make-the-world-more-fair-and-inclusive">Believes data can and should be used to make the world more fair and inclusive</h2>
+<section id="objective" class="level2">
+<h2 class="anchored" data-anchor-id="objective">Objective</h2>
+<p>The objective of this assignment was to automate the collection of government documents using R. Specifically, the task involved searching <strong>GovInfo</strong> for documents related to the <strong>Foreign Relations Committee</strong>, downloading the ten most recent results, and storing them for analysis.</p>
+</section>
+<section id="a.-the-scraping-process" class="level2">
+<h2 class="anchored" data-anchor-id="a.-the-scraping-process">A. The Scraping Process</h2>
+<p>I utilized a provided R script (<code>govtdata01.R</code>) which processes a JSON/CSV list of search results. The script utilizes the <code>purrr</code> package to iterate through file URLs and <code>download.file</code> to save the PDFs locally.</p>
+<p>Key steps taken in the script:</p>
+<ol type="1">
+<li><strong>Loaded Libraries:</strong> <code>purrr</code>, <code>magrittr</code>, <code>jsonlite</code>, and <code>dplyr</code>.</li>
+<li><strong>Input Data:</strong> Read the search results containing metadata (PDF links and Package IDs).</li>
+<li><strong>Directory Setup:</strong> Created the target folder <code>assignments/assign05</code>.</li>
+<li><strong>Execution:</strong> Ran a loop restricted to <code>1:10</code> to capture only the ten most recent files.</li>
+</ol>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Snippet of the download logic used</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span> <span class="sc">%&gt;%</span> </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">map_chr</span>(<span class="sc">~</span> <span class="fu">download_govfiles_pdf</span>(pdf_govfiles_url[.], pdf_govfiles_id[.]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="b.-difficulties-encountered" class="level2">
+<h2 class="anchored" data-anchor-id="b.-difficulties-encountered">B. Difficulties Encountered</h2>
+<p>During the scraping process, several challenges emerged:</p>
+<ol type="1">
+<li><strong>Dynamic URLs:</strong> The links provided in the search export are sometimes temporary or session-based. If too much time passes between the search and the download script execution, the links may expire.</li>
+<li><strong>Anti-Scraping Measures:</strong> Government servers often have rate limits. While <code>Sys.sleep(runif(1, 1, 3))</code> was used to mimic human behavior, running a larger batch (e.g., 100+ files) could still trigger IP bans or timeouts.</li>
+<li><strong>File Naming:</strong> The default filenames (based on <code>packageId</code> or index) are not descriptive (e.g., <code>govfiles_1.pdf</code>). This makes it difficult to know what the document is without opening it.</li>
+</ol>
+</section>
+<section id="c.-usability-and-improvement" class="level2">
+<h2 class="anchored" data-anchor-id="c.-usability-and-improvement">C. Usability and Improvement</h2>
+<section id="how-usable-is-the-scraped-data" class="level3">
+<h3 class="anchored" data-anchor-id="how-usable-is-the-scraped-data">1. How usable is the scraped data?</h3>
+<p>The scraped data consists of <strong>unstructured PDF files</strong>. * <strong>Pros:</strong> They are the official, authoritative source documents. * <strong>Cons:</strong> They are not immediately “computable.” You cannot easily run regressions or frequency counts on them without a secondary processing step (OCR or text extraction). Furthermore, metadata (dates, authors) is locked inside the PDF text rather than being in a tidy dataframe.</p>
+</section>
+<section id="how-to-improve" class="level3">
+<h3 class="anchored" data-anchor-id="how-to-improve">2. How to improve?</h3>
+<p>To make this process robust for a larger research project, I would recommend:</p>
+<ul>
+<li><strong>Use the API:</strong> Instead of manually downloading a CSV search result and feeding it to R, use the <strong>GovInfo API</strong>. This allows for dynamic querying and ensures links are fresh.</li>
+<li><strong>Text Extraction:</strong> Integrate the <code>pdftools</code> package in R to immediately convert the downloaded PDFs into text strings.</li>
+<li><strong>Metadata Enrichment:</strong> Rename the files using the <code>title</code> or <code>date</code> columns from the CSV during the download loop (e.g., <code>2024-11-27_Hearing_Transcript.pdf</code>) to improve organization.</li>
+</ul>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
